@@ -1,6 +1,6 @@
 ---
 title: "EventSource can't POST. Your LLM stream needs it to."
-published: false
+published: true
 description: "The browser's EventSource only does GET, with no custom headers — and every LLM streaming endpoint wants a POST with an Authorization header and a JSON body. Here's sse-wire: a zero-dependency, fetch-based SSE client you consume with for await, that aborts without leaking a reader and reconnects only when the connection actually drops."
 tags: javascript, typescript, ai, opensource
 cover_image: https://raw.githubusercontent.com/H1manshu01/sse-wire/main/assets/cover.png
