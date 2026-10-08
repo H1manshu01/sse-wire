@@ -4,7 +4,7 @@
   <rect x="0" y="0" width="1000" height="4" fill="#a5d6ff"/>
 
   <!-- left column -->
-  <text x="56" y="150" font-size="54" font-weight="700" fill="#e6edf3">post<tspan fill="#a5d6ff">-sse</tspan></text>
+  <text x="56" y="150" font-size="54" font-weight="700" fill="#e6edf3">sse<tspan fill="#a5d6ff">-wire</tspan></text>
   <text x="58" y="192" font-size="18" fill="#c9d1d9">SSE over fetch — POST, headers, reconnect</text>
   <text x="58" y="222" font-size="15" fill="#8b949e">the POST + headers EventSource can't do</text>
 
@@ -19,7 +19,7 @@
   </g>
 
   <!-- install line -->
-  <text x="58" y="344" font-size="18"><tspan fill="#a5d6ff">$</tspan> <tspan fill="#c9d1d9">npm install post-sse</tspan></text>
+  <text x="58" y="344" font-size="18"><tspan fill="#a5d6ff">$</tspan> <tspan fill="#c9d1d9">npm install sse-wire</tspan></text>
 
   <!-- terminal card (right) -->
   <rect x="512" y="56" width="432" height="308" rx="12" fill="#010409" stroke="#30363d" stroke-width="1"/>

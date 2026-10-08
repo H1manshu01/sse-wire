@@ -1,6 +1,6 @@
 # Competitor scan (M0)
 
-Why `post-sse` exists: reading a `text/event-stream` is well-trodden ground, but
+Why `sse-wire` exists: reading a `text/event-stream` is well-trodden ground, but
 the **LLM-streaming** case needs a specific combination — a `POST` with a body
 and custom auth headers, an `AbortSignal` you already hold, a `for await`
 async-iterable API, Node **and** browser support, zero dependencies, and
@@ -27,16 +27,16 @@ with `Last-Event-ID`. Robust, standardized, zero-install.
 - **GET only, no custom headers.** This is the dealbreaker for LLM APIs: you
   can't `POST` a request body, and you can't set an `Authorization` header. The
   one shape every chat-completions endpoint requires is the one shape
-  `EventSource` can't produce. `post-sse` is `fetch`-based, so POST + headers +
+  `EventSource` can't produce. `sse-wire` is `fetch`-based, so POST + headers +
   body are first-class.
 - **Always-on reconnection.** It reconnects on *any* stream end, including a
   clean one — wrong for an LLM response, where a clean end means the generation
-  is complete. `post-sse` reconnects on transport errors **only**, and opt-in.
+  is complete. `sse-wire` reconnects on transport errors **only**, and opt-in.
 - **Callback API, `.close()` cancellation.** No async iteration; you wire up
   listeners and call `.close()`. It doesn't integrate with an `AbortSignal` you
   already have from the rest of your request.
 - **Runtime availability.** A browser built-in; in Node it only landed as a
-  global in Node 21, so Node 18–20 needs a polyfill. `post-sse` runs on Node
+  global in Node 21, so Node 18–20 needs a polyfill. `sse-wire` runs on Node
   ≥ 18, the browser, and Bun off a global `fetch`.
 
 ## `@microsoft/fetch-event-source`
@@ -50,18 +50,18 @@ and widely used.
 **What it misses.**
 - **Callback API, not async-iterable.** You pass `onmessage` handlers to a
   `fetchEventSource(url, {...})` call; there's no `for await (const event of …)`.
-  `post-sse` is an async generator, so it composes with `break`, `try/finally`,
+  `sse-wire` is an async generator, so it composes with `break`, `try/finally`,
   and the rest of normal control flow.
 - **Reconnection is yours to drive.** Retry behavior is expressed by returning a
   delay from `onclose`/`onerror` (or throwing to stop) — flexible, but you own
-  the policy and the `Last-Event-ID` bookkeeping. `post-sse` ships an opt-in
+  the policy and the `Last-Event-ID` bookkeeping. `sse-wire` ships an opt-in
   equal-jitter exponential policy that resumes from the last `id` automatically,
   and treats a clean end as completion for you.
 - **Scope.** It is deliberately a transport with hooks; the typed
   `SSEEvent<E>` shape, the `json()` convenience, and the explicit
   clean-end-is-done semantics are things you'd layer on yourself.
 
-It's the closest neighbor in spirit. `post-sse` differs mainly in the
+It's the closest neighbor in spirit. `sse-wire` differs mainly in the
 async-iterable surface and the batteries-included, LLM-shaped reconnection
 defaults.
 
@@ -77,14 +77,14 @@ headers, so it's a common way to get SSE in Node with the familiar
 - **`EventSource` semantics by design.** It mirrors the spec interface —
   `onmessage`/`addEventListener`, `.close()`, always-on auto-reconnect — so the
   clean-end-reconnects-anyway behavior and the callback model come along with
-  it. `post-sse` intentionally departs from the spec surface for an async
+  it. `sse-wire` intentionally departs from the spec surface for an async
   generator and completion-aware reconnection.
 - **Request shape leans GET.** Even where headers are supported, the interface
   is built around the `EventSource` model rather than an arbitrary
   `fetch(method, body, headers)` request; POSTing a chat completion isn't its
   ergonomic path.
 - **Dependencies / footprint.** As a fuller polyfill it carries more surface (and
-  historically transitive deps) than a single-purpose client. `post-sse` is zero
+  historically transitive deps) than a single-purpose client. `sse-wire` is zero
   runtime dependencies and ~1.4 kB min+brotli.
 - **No `AbortSignal` integration or typed events.** Cancellation is `.close()`;
   there's no generic event-name typing.
@@ -100,7 +100,7 @@ early 2026). Excellent at keeping a persistent event stream alive.
 - **Built for always-on streams, not request/response completions.** Its model
   is a connection that *should* stay open and be re-established whenever it
   drops. An LLM completion is the opposite: a one-shot stream that ends cleanly
-  when the answer is done. `post-sse`'s clean-end-is-completion default matches
+  when the answer is done. `sse-wire`'s clean-end-is-completion default matches
   that; a persistent-stream client fights it.
 - **`EventSource`-style callback API.** Listener-based with `.close()`, not a
   `for await` generator with `AbortSignal`.
@@ -119,13 +119,13 @@ lightweight single-file option.
 **What it misses.**
 - **Browser-focused.** It's built around browser globals and the
   `EventSource`-like listener API; it isn't a Node/Bun story the way a
-  `fetch`-based client is. `post-sse` runs the same code across all three.
+  `fetch`-based client is. `sse-wire` runs the same code across all three.
 - **Callback API, manual reconnection.** No async iteration, no built-in
   completion-aware reconnection with `Last-Event-ID` resume or equal-jitter
   backoff.
 - **Typing.** Not designed around a generic, typed event shape.
 
-`post-sse` shares its core motivation (POST + headers) but targets the
+`sse-wire` shares its core motivation (POST + headers) but targets the
 cross-runtime, async-iterable, typed, reconnection-included niche.
 
 ## Framework SSE utilities (brief)
@@ -140,7 +140,7 @@ framework or SDK: a server-side responder isn't a client at all, and an SDK's
 client helper is tied to that SDK's request lifecycle and provider shapes. None
 is a standalone, zero-dependency, `fetch`-based SSE client you can drop into any
 pipeline — streaming, batch, a mock in a test, or a non-LLM `text/event-stream`.
-`post-sse` is that pure, framework-agnostic transport, and it hands clean events
+`sse-wire` is that pure, framework-agnostic transport, and it hands clean events
 to the rest of the suite ([`trickle-json`](https://github.com/H1manshu01/trickle-json)
 then [`coerce-json`](https://github.com/H1manshu01/coerce-json)) regardless of
 where the request originated.
@@ -149,7 +149,7 @@ where the request originated.
 
 ## The gap, in one line
 
-| Capability | post-sse | native `EventSource` | `@microsoft/fetch-event-source` | `eventsource` (npm) | `launchdarkly-eventsource` | `sse.js` |
+| Capability | sse-wire | native `EventSource` | `@microsoft/fetch-event-source` | `eventsource` (npm) | `launchdarkly-eventsource` | `sse.js` |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
 | POST + custom headers | ✅ | — | ✅ | ⚠️ | ✅ | ✅ |
 | `AbortSignal` cancellation | ✅ | ⚠️ `.close()` | ✅ | ⚠️ `.close()` | ⚠️ `.close()` | ⚠️ `.close()` |
@@ -160,6 +160,6 @@ where the request originated.
 | Zero runtime dependencies | ✅ | n/a | ✅ | ⚠️ | ⚠️ | ✅ |
 | Typed events (`SSEEvent<E>`) | ✅ | ⚠️ | ⚠️ | ⚠️ | ⚠️ | ⚠️ |
 
-`post-sse` is the row that is POST-capable, async-iterable, cross-runtime,
+`sse-wire` is the row that is POST-capable, async-iterable, cross-runtime,
 zero-dependency, typed, and reconnects **only** on a real transport error — the
 exact shape an LLM stream needs.

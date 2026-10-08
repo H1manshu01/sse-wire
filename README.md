@@ -1,23 +1,23 @@
-# post-sse
+# sse-wire
 
 **Zero-dependency, fetch-based Server-Sent Events client — the POST, custom headers, `AbortSignal`, and opt-in reconnection that the browser's `EventSource` can't do. For Node, the browser, and Bun.**
 
 <p>
-  <a href="https://www.npmjs.com/package/post-sse"><img src="https://img.shields.io/npm/v/post-sse?color=cb3837&logo=npm" alt="npm version"></a>
-  <a href="https://github.com/H1manshu01/post-sse/actions/workflows/ci.yml"><img src="https://github.com/H1manshu01/post-sse/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
-  <a href="https://bundlephobia.com/package/post-sse"><img src="https://img.shields.io/bundlephobia/minzip/post-sse?label=min%2Bgzip" alt="minified + gzipped size"></a>
+  <a href="https://www.npmjs.com/package/sse-wire"><img src="https://img.shields.io/npm/v/sse-wire?color=cb3837&logo=npm" alt="npm version"></a>
+  <a href="https://github.com/H1manshu01/sse-wire/actions/workflows/ci.yml"><img src="https://github.com/H1manshu01/sse-wire/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <a href="https://bundlephobia.com/package/sse-wire"><img src="https://img.shields.io/bundlephobia/minzip/sse-wire?label=min%2Bgzip" alt="minified + gzipped size"></a>
   <img src="https://img.shields.io/badge/provenance-signed-2ea44f?logo=npm" alt="published with npm provenance">
-  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/post-sse?color=blue" alt="MIT license"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/sse-wire?color=blue" alt="MIT license"></a>
 </p>
 
-<img src="assets/demo.svg" alt="post-sse streaming a POSTed LLM chat completion over Server-Sent Events" width="680">
+<img src="assets/demo.svg" alt="sse-wire streaming a POSTed LLM chat completion over Server-Sent Events" width="680">
 
 The browser's `EventSource` is the obvious way to read a `text/event-stream` — except it can **only `GET`** and **can't send a header**. Every LLM streaming endpoint needs the opposite: a `POST` with an `Authorization` header and a JSON body. So you reach for `fetch`, and now you own the hard part — decoding bytes into events across chunk and UTF-8 boundaries, cancelling cleanly on abort, and deciding what a dropped connection means.
 
-`post-sse` is that layer: a `fetch`-based SSE client you consume with `for await`, that POSTs, sends headers, aborts without leaking a reader, and reconnects **only when you ask it to**.
+`sse-wire` is that layer: a `fetch`-based SSE client you consume with `for await`, that POSTs, sends headers, aborts without leaking a reader, and reconnects **only when you ask it to**.
 
 ```ts
-import { sse } from "post-sse";
+import { sse } from "sse-wire";
 
 const controller = new AbortController();
 
@@ -39,7 +39,7 @@ That's the whole surface for the common case: open the stream, iterate events, `
 
 `EventSource` is a browser built-in, and the npm ecosystem has several polyfills and `fetch`-based clients. But an **LLM stream** specifically needs: a POST body, custom auth headers, an `AbortSignal` you already have from the rest of your app, an ergonomic async-iterable API, and reconnection that understands that a *clean* stream end means **the answer is finished**, not that it should reconnect. Most options solve some of that; the gaps are exactly where LLM streaming lives.
 
-| | post-sse | native `EventSource` | `@microsoft/fetch-event-source` | `eventsource` (npm) | `launchdarkly-eventsource` |
+| | sse-wire | native `EventSource` | `@microsoft/fetch-event-source` | `eventsource` (npm) | `launchdarkly-eventsource` |
 |---|:---:|:---:|:---:|:---:|:---:|
 | POST + custom headers | ✅ | — | ✅ | ✅ | ✅ |
 | `AbortSignal` cancellation | ✅ | ⚠️ `.close()` only | ✅ | ⚠️ `.close()` only | ⚠️ `.close()` only |
@@ -53,13 +53,13 @@ Comparison claims about third-party libraries are **as of early 2026** — re-ch
 
 ## Where it fits
 
-`post-sse` is the **transport** step of a streaming structured-output pipeline, and sits **first** — it's the package that turns a `fetch` into a stream of events. Its siblings (same author) pick up from there:
+`sse-wire` is the **transport** step of a streaming structured-output pipeline, and sits **first** — it's the package that turns a `fetch` into a stream of events. Its siblings (same author) pick up from there:
 
 ```
-fetch → SSE (post-sse) → parse partial JSON (trickle-json) → repair/coerce to schema (coerce-json) → validate
+fetch → SSE (sse-wire) → parse partial JSON (trickle-json) → repair/coerce to schema (coerce-json) → validate
 ```
 
-- **[`post-sse`](https://www.npmjs.com/package/post-sse)** — POST the request, stream the events. *(this package)*
+- **[`sse-wire`](https://www.npmjs.com/package/sse-wire)** — POST the request, stream the events. *(this package)*
 - **[`trickle-json`](https://www.npmjs.com/package/trickle-json)** — assemble the streamed token deltas into the best valid partial value available on every chunk, without throwing.
 - **[`coerce-json`](https://www.npmjs.com/package/coerce-json)** — repair and coerce that value to fit your Zod / JSON Schema, logging every fix.
 
@@ -68,7 +68,7 @@ Each is zero-dependency and useful on its own; together they're a progressive, t
 ## Install
 
 ```sh
-npm install post-sse
+npm install sse-wire
 ```
 
 Zero runtime dependencies. Ships ESM + CJS + `.d.ts`, ~1.4 kB min+brotli. Runs anywhere there's a global `fetch` and `ReadableStream`: **Node ≥ 18**, modern **browsers**, and **Bun**. On older runtimes without a global `fetch`, inject one via the `fetch` option.
@@ -78,8 +78,8 @@ Zero runtime dependencies. Ships ESM + CJS + `.d.ts`, ~1.4 kB min+brotli. Runs a
 Single entry point, no subpaths.
 
 ```ts
-import { sse, parseSSE, json, SSEError } from "post-sse";
-import type { SSEEvent, SSEInit, ReconnectOptions, ParseOptions } from "post-sse";
+import { sse, parseSSE, json, SSEError } from "sse-wire";
+import type { SSEEvent, SSEInit, ReconnectOptions, ParseOptions } from "sse-wire";
 ```
 
 ### `sse(url, init?) → AsyncGenerator<SSEEvent>`
@@ -107,7 +107,7 @@ Reconnection is **off by default** — see [Reconnection](#reconnection).
 The raw, transport-agnostic parser underneath `sse()`. Turns any `AsyncIterable<string | Uint8Array>` — a `response.body`, a file stream, a mock, a WebSocket-to-SSE bridge — into discrete events. Use it when you already have a byte/text stream and just want it parsed:
 
 ```ts
-import { parseSSE } from "post-sse";
+import { parseSSE } from "sse-wire";
 
 for await (const event of parseSSE(myByteStream, { onRetry: (ms) => console.log("retry", ms) })) {
   // event: { event?, data, id? }
@@ -131,7 +131,7 @@ It implements the SSE wire format carefully (see [Guardrails](#guardrails)):
 Convenience for the common case where each event's `data` is a JSON chunk (OpenAI/Anthropic deltas):
 
 ```ts
-import { sse, json } from "post-sse";
+import { sse, json } from "sse-wire";
 
 for await (const event of sse(url, init)) {
   if (event.data === "[DONE]") break;   // guard sentinels first — they aren't JSON
@@ -146,7 +146,7 @@ It's `JSON.parse(event.data)` with a type parameter. It **throws** on non-JSON p
 Thrown when the server responds with a non-2xx status or has no body.
 
 ```ts
-import { sse, SSEError } from "post-sse";
+import { sse, SSEError } from "sse-wire";
 
 try {
   for await (const event of sse(url, init)) { /* ... */ }
@@ -214,7 +214,7 @@ Details:
 
 ## Guardrails
 
-The fiddly parts of a hand-rolled `fetch` SSE loop are where bugs hide. `post-sse` handles them, covered by unit and property tests (`test/parse.test.ts`, `test/transport.test.ts`):
+The fiddly parts of a hand-rolled `fetch` SSE loop are where bugs hide. `sse-wire` handles them, covered by unit and property tests (`test/parse.test.ts`, `test/transport.test.ts`):
 
 - **No leaked readers.** The underlying `ReadableStream` reader is acquired in one place and **always cancelled in a `finally`** — on a clean end, an early `break`/`return` out of the `for await`, an abort, or a thrown error. The connection is never left dangling.
 - **Abort-safe.** With a `signal`, each read races the abort; aborting rejects with `signal.reason` (or a standard `AbortError`), cancels the reader, and cancels any pending reconnect delay. On a non-2xx, the response body is cancelled before the `SSEError` is thrown.
@@ -224,10 +224,10 @@ The fiddly parts of a hand-rolled `fetch` SSE loop are where bugs hide. `post-ss
 
 ## Composing the pipeline
 
-`post-sse` yields raw SSE events; its siblings turn those into a typed, schema-fitted value. Here's the full three-package flow — stream an LLM chat completion, assemble the streamed JSON as it arrives, and coerce the final value to a Zod schema:
+`sse-wire` yields raw SSE events; its siblings turn those into a typed, schema-fitted value. Here's the full three-package flow — stream an LLM chat completion, assemble the streamed JSON as it arrives, and coerce the final value to a Zod schema:
 
 ```ts
-import { sse } from "post-sse";
+import { sse } from "sse-wire";
 import { StreamingJsonParser } from "trickle-json";
 import { coerce } from "coerce-json/zod";
 import { z } from "zod";
@@ -242,7 +242,7 @@ const controller = new AbortController();
 const parser = new StreamingJsonParser();
 parser.on("snapshot", (partial) => renderPreview(partial)); // progressive UI, every chunk
 
-// 1. post-sse: POST the request and stream SSE events
+// 1. sse-wire: POST the request and stream SSE events
 for await (const event of sse("https://api.openai.com/v1/chat/completions", {
   method: "POST",
   headers: { authorization: `Bearer ${key}`, "content-type": "application/json" },
@@ -264,7 +264,7 @@ if (ok) save(value);
 else console.warn("could not fully repair:", changes);
 ```
 
-`post-sse` owns the transport; `trickle-json` gives you the best value available on every chunk without throwing; `coerce-json` makes that value fit your schema and hands you the receipts. Each step is independent, so you can adopt just the one you need.
+`sse-wire` owns the transport; `trickle-json` gives you the best value available on every chunk without throwing; `coerce-json` makes that value fit your schema and hands you the receipts. Each step is independent, so you can adopt just the one you need.
 
 ## Types
 

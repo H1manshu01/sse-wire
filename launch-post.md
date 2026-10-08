@@ -1,9 +1,9 @@
 ---
 title: "EventSource can't POST. Your LLM stream needs it to."
 published: false
-description: "The browser's EventSource only does GET, with no custom headers — and every LLM streaming endpoint wants a POST with an Authorization header and a JSON body. Here's post-sse: a zero-dependency, fetch-based SSE client you consume with for await, that aborts without leaking a reader and reconnects only when the connection actually drops."
+description: "The browser's EventSource only does GET, with no custom headers — and every LLM streaming endpoint wants a POST with an Authorization header and a JSON body. Here's sse-wire: a zero-dependency, fetch-based SSE client you consume with for await, that aborts without leaking a reader and reconnects only when the connection actually drops."
 tags: javascript, typescript, ai, opensource
-cover_image: https://raw.githubusercontent.com/H1manshu01/post-sse/main/assets/cover.png
+cover_image: https://raw.githubusercontent.com/H1manshu01/sse-wire/main/assets/cover.png
 series: "Streaming structured output"
 canonical_url: https://dev.to/h1manshu01/eventsource-cant-post-your-llm-stream-needs-it-to
 ---
@@ -60,13 +60,13 @@ ends when the answer is done.
 The common thread: either you can't POST, or you get a callback API with
 reconnection tuned for the wrong shape of stream.
 
-## post-sse
+## sse-wire
 
-[`post-sse`](https://www.npmjs.com/package/post-sse) is a zero-dependency,
+[`sse-wire`](https://www.npmjs.com/package/sse-wire) is a zero-dependency,
 `fetch`-based SSE client you consume with `for await`:
 
 ```ts
-import { sse } from "post-sse";
+import { sse } from "sse-wire";
 
 const controller = new AbortController();
 
@@ -98,7 +98,7 @@ weight:
 
 ### Cancellation that doesn't leak
 
-Abort, and `post-sse` throws the standard `AbortError`, cancels the in-flight
+Abort, and `sse-wire` throws the standard `AbortError`, cancels the in-flight
 `fetch`, and cancels the stream reader. Same if you just `break` out of the loop
 early — the reader is cancelled in a `finally`, so the connection is never left
 dangling. It's covered by tests that assert the reader's `cancel()` actually ran
@@ -127,7 +127,7 @@ loop. Your consumer never notices the seam.
 
 ### The parser is the hard-won part
 
-The wire format is fiddly, and `post-sse` handles it so you don't: CR / LF /
+The wire format is fiddly, and `sse-wire` handles it so you don't: CR / LF /
 CRLF terminators (including a **CRLF split across two chunks**), multi-line
 `data:` joined with `\n`, comments, a leading BOM, a NUL-in-`id`, and a final
 line with no newline. It buffers across chunk **and** UTF-8 boundaries, so a
@@ -138,7 +138,7 @@ events come out identical to a one-shot parse.
 You can use that parser directly on any byte/text stream, not just a fetch body:
 
 ```ts
-import { parseSSE } from "post-sse";
+import { parseSSE } from "sse-wire";
 
 for await (const event of parseSSE(someByteStream)) {
   // { event?, data, id? }
@@ -147,14 +147,14 @@ for await (const event of parseSSE(someByteStream)) {
 
 ## It's the front of a pipeline
 
-`post-sse` is the **transport** step of a streaming structured-output flow — and
+`sse-wire` is the **transport** step of a streaming structured-output flow — and
 it sits first. Its two siblings pick up from the events it yields:
 
 ```
-fetch → SSE (post-sse) → parse partial JSON (trickle-json) → repair/coerce to schema (coerce-json) → validate
+fetch → SSE (sse-wire) → parse partial JSON (trickle-json) → repair/coerce to schema (coerce-json) → validate
 ```
 
-- **[`post-sse`](https://www.npmjs.com/package/post-sse)** — POST the request,
+- **[`sse-wire`](https://www.npmjs.com/package/sse-wire)** — POST the request,
   stream the events. *(this one)*
 - **[`trickle-json`](https://www.npmjs.com/package/trickle-json)** — assemble the
   streamed token deltas into the best valid partial value available on every
@@ -166,7 +166,7 @@ Here's all three together — stream a completion, assemble the JSON as it arriv
 and coerce the result to a schema:
 
 ```ts
-import { sse } from "post-sse";
+import { sse } from "sse-wire";
 import { StreamingJsonParser } from "trickle-json";
 import { coerce } from "coerce-json/zod";
 import { z } from "zod";
@@ -191,25 +191,25 @@ if (ok) save(value);
 else console.warn("could not fully repair:", changes);
 ```
 
-`post-sse` owns the transport; `trickle-json` gives you the best value on every
+`sse-wire` owns the transport; `trickle-json` gives you the best value on every
 chunk without throwing; `coerce-json` makes it fit your schema and hands you the
 receipts. Each is zero-dependency and works on its own — adopt only the piece you
 need.
 
 "But doesn't provider structured output / the official SDK already do this?" The
 SDKs help, but they couple the stream to their request lifecycle and their
-provider's shapes. `post-sse` is a pure, framework-agnostic `fetch` SSE client:
+provider's shapes. `sse-wire` is a pure, framework-agnostic `fetch` SSE client:
 drop it into any pipeline, point it at any `text/event-stream` (LLM or not), mock
 it in a test, and hand clean events to whatever's next.
 
 ## Try it
 
 ```sh
-npm install post-sse
+npm install sse-wire
 ```
 
-- **npm:** https://www.npmjs.com/package/post-sse
-- **GitHub:** https://github.com/H1manshu01/post-sse
+- **npm:** https://www.npmjs.com/package/sse-wire
+- **GitHub:** https://github.com/H1manshu01/sse-wire
 - Zero runtime dependencies, ESM + CJS, full types, ~1.4 kB min+brotli,
   published with provenance. Runs on Node ≥ 18, the browser, and Bun.
 

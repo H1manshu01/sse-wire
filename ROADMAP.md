@@ -1,6 +1,6 @@
 # Roadmap
 
-`post-sse` ships `M0–M5` as **v0.1** — the SSE parser, the `fetch` transport
+`sse-wire` ships `M0–M5` as **v0.1** — the SSE parser, the `fetch` transport
 (POST / headers / abort), opt-in reconnection with typed events, the tests, and
 the docs are all in place. It is the **first** package in a streaming
 structured-output suite (the transport step); the parser it feeds is
@@ -9,7 +9,7 @@ repair step after that is
 [`coerce-json`](https://github.com/H1manshu01/coerce-json).
 
 ```
-fetch → SSE (post-sse) → parse partial JSON (trickle-json) → repair/coerce (coerce-json)
+fetch → SSE (sse-wire) → parse partial JSON (trickle-json) → repair/coerce (coerce-json)
 ```
 
 ## M0 — Validate & name ✅

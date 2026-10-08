@@ -1,5 +1,5 @@
 {
-  "name": "post-sse",
+  "name": "sse-wire",
   "version": "0.1.0",
   "description": "Zero-dependency, fetch-based Server-Sent Events client for LLM streams — POST, custom headers, AbortSignal, and reconnection, in Node and the browser. The POST + headers EventSource can't do.",
   "type": "module",
@@ -23,11 +23,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/H1manshu01/post-sse.git"
+    "url": "git+https://github.com/H1manshu01/sse-wire.git"
   },
-  "homepage": "https://github.com/H1manshu01/post-sse#readme",
+  "homepage": "https://github.com/H1manshu01/sse-wire#readme",
   "bugs": {
-    "url": "https://github.com/H1manshu01/post-sse/issues"
+    "url": "https://github.com/H1manshu01/sse-wire/issues"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

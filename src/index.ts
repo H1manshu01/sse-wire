@@ -1,14 +1,14 @@
 /**
- * post-sse — a zero-dependency, fetch-based Server-Sent Events client.
+ * sse-wire — a zero-dependency, fetch-based Server-Sent Events client.
  *
  * The POST + headers + reconnection that the browser's `EventSource` can't do,
  * for Node 18+ and the browser. The step before a partial-JSON parser
  * (trickle-json) in a streaming structured-output pipeline:
  *
- *   fetch → **SSE (post-sse)** → parse partial JSON (trickle-json) → repair/coerce (coerce-json)
+ *   fetch → **SSE (sse-wire)** → parse partial JSON (trickle-json) → repair/coerce (coerce-json)
  *
  * ```ts
- * import { sse } from "post-sse";
+ * import { sse } from "sse-wire";
  *
  * for await (const event of sse(url, { method: "POST", headers, body })) {
  *   // event: { event?, data, id? }

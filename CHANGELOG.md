@@ -63,4 +63,4 @@ that the browser's `EventSource` can't do.
 - ESM + CJS builds with type declarations; zero-dependency, under the
   `size-limit` budget.
 
-[0.1.0]: https://github.com/H1manshu01/post-sse/releases/tag/v0.1.0
+[0.1.0]: https://github.com/H1manshu01/sse-wire/releases/tag/v0.1.0
