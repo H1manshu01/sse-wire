@@ -5,7 +5,7 @@ description: "The browser's EventSource only does GET, with no custom headers â€
 tags: javascript, typescript, ai, opensource
 cover_image: https://raw.githubusercontent.com/H1manshu01/sse-wire/main/assets/cover.png
 series: "Streaming structured output"
-canonical_url: https://dev.to/h1manshu01/eventsource-cant-post-your-llm-stream-needs-it-to
+canonical_url: https://dev.to/h1manshu01/eventsource-cant-post-your-llm-stream-needs-it-to-3gll
 ---
 
 You want to stream a chat completion. The response is a `text/event-stream`, so
