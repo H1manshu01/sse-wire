@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+  <!-- background -->
+  <rect x="0" y="0" width="1280" height="640" fill="#0d1117"/>
+  <rect x="0" y="0" width="1280" height="6" fill="#a5d6ff"/>
+
+  <!-- left column -->
+  <text x="80" y="250" font-size="72" font-weight="700" fill="#e6edf3">post<tspan fill="#a5d6ff">-sse</tspan></text>
+  <text x="82" y="304" font-size="26" fill="#c9d1d9">SSE over fetch — POST + headers</text>
+  <text x="82" y="340" font-size="19" fill="#8b949e">the POST + headers EventSource can't do</text>
+
+  <!-- feature chips -->
+  <g font-size="18" fill="#c9d1d9">
+    <rect x="80" y="376" width="196" height="44" rx="22" fill="#161b22" stroke="#30363d"/>
+    <text x="178" y="404" text-anchor="middle">zero-dependency</text>
+    <rect x="288" y="376" width="186" height="44" rx="22" fill="#161b22" stroke="#30363d"/>
+    <text x="381" y="404" text-anchor="middle">POST + headers</text>
+    <rect x="486" y="376" width="118" height="44" rx="22" fill="#161b22" stroke="#30363d"/>
+    <text x="545" y="404" text-anchor="middle">~1.4 kB</text>
+  </g>
+
+  <!-- install line -->
+  <text x="82" y="508" font-size="25"><tspan fill="#a5d6ff">$</tspan> <tspan fill="#c9d1d9">npm install post-sse</tspan></text>
+
+  <!-- terminal card (right) -->
+  <rect x="700" y="96" width="500" height="448" rx="14" fill="#010409" stroke="#30363d" stroke-width="1"/>
+  <rect x="700" y="96" width="500" height="46" rx="14" fill="#161b22"/>
+  <rect x="700" y="128" width="500" height="14" fill="#161b22"/>
+  <circle cx="726" cy="119" r="6.5" fill="#ff5f56"/>
+  <circle cx="748" cy="119" r="6.5" fill="#ffbd2e"/>
+  <circle cx="770" cy="119" r="6.5" fill="#27c93f"/>
+  <text x="975" y="124" text-anchor="middle" font-size="14" fill="#8b949e">POST /v1/chat · text/event-stream</text>
+
+  <!-- body: the sse() loop + streaming events -->
+  <text x="724" y="192" font-size="15" fill="#6e7681">// POST + headers — EventSource can't</text>
+  <text x="724" y="228" font-size="18"><tspan fill="#ff7b72">for await</tspan><tspan fill="#8b949e"> (const e of </tspan><tspan fill="#a5d6ff">sse</tspan><tspan fill="#8b949e">(url))</tspan></text>
+  <text x="724" y="272" font-size="18" fill="#a5d6ff">↓  events stream in</text>
+  <text x="724" y="314" font-size="16"><tspan fill="#8b949e">event: </tspan><tspan fill="#a5d6ff">delta</tspan><tspan fill="#8b949e">  data: {</tspan><tspan fill="#79c0ff">"text"</tspan><tspan fill="#8b949e">:</tspan><tspan fill="#a5d6ff">"Hel"</tspan><tspan fill="#8b949e">}</tspan></text>
+  <text x="724" y="346" font-size="16"><tspan fill="#8b949e">event: </tspan><tspan fill="#a5d6ff">delta</tspan><tspan fill="#8b949e">  data: {</tspan><tspan fill="#79c0ff">"text"</tspan><tspan fill="#8b949e">:</tspan><tspan fill="#a5d6ff">"lo"</tspan><tspan fill="#8b949e">}</tspan></text>
+  <text x="724" y="378" font-size="16"><tspan fill="#8b949e">event: </tspan><tspan fill="#a5d6ff">done</tspan><tspan fill="#8b949e">   data: [DONE]</tspan></text>
+  <text x="724" y="414" font-size="15"><tspan fill="#27c93f">✓</tspan><tspan fill="#6e7681"> streamed over fetch · reconnects · zero-dep</tspan></text>
+</svg>

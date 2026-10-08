@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" role="img" aria-label="post-sse streaming Server-Sent Events over a fetch POST request, one event at a time">
+  <defs>
+    <style>
+      .kw { fill: #ff7b72; }  /* keyword */
+      .fn { fill: #a5d6ff; }  /* sse / event names */
+      .s  { fill: #a5d6ff; }  /* strings */
+      .key{ fill: #79c0ff; }  /* json keys */
+      .p  { fill: #8b949e; }  /* punctuation */
+      .c  { fill: #6e7681; }  /* comments */
+      .t  { font-size: 14px; }
+    </style>
+  </defs>
+
+  <!-- terminal card -->
+  <rect x="0" y="0" width="720" height="420" rx="12" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+  <rect x="0" y="0" width="720" height="40" rx="12" fill="#161b22"/>
+  <rect x="0" y="28" width="720" height="12" fill="#161b22"/>
+  <circle cx="22" cy="20" r="6" fill="#ff5f56"/>
+  <circle cx="44" cy="20" r="6" fill="#ffbd2e"/>
+  <circle cx="66" cy="20" r="6" fill="#27c93f"/>
+  <text x="360" y="25" text-anchor="middle" font-size="13" fill="#8b949e">POST /v1/chat/completions · text/event-stream</text>
+
+  <!-- loop clock -->
+  <rect width="0" height="0">
+    <animate id="loop" attributeName="width" begin="0s;loop.end" dur="7.4s" values="0;0"/>
+  </rect>
+
+  <!-- intro: comment + the loop -->
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+0.2s" dur="0.2s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+7.0s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t c" x="28" y="80">// POST + headers + AbortSignal — what EventSource can't</text>
+    <text class="t" x="28" y="110"><tspan class="kw">for await</tspan><tspan class="p"> (const e of </tspan><tspan class="fn">sse</tspan><tspan class="p">(url, { method: </tspan><tspan class="s">"POST"</tspan><tspan class="p"> }))</tspan></text>
+  </g>
+
+  <!-- events stream in, one at a time -->
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+1.4s" dur="0.2s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+7.0s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="28" y="152"><tspan class="p">event: </tspan><tspan class="fn">delta</tspan><tspan class="p">   data: {</tspan><tspan class="key">"text"</tspan><tspan class="p">: </tspan><tspan class="s">"Hel"</tspan><tspan class="p">}</tspan></text>
+  </g>
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+2.2s" dur="0.2s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+7.0s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="28" y="180"><tspan class="p">event: </tspan><tspan class="fn">delta</tspan><tspan class="p">   data: {</tspan><tspan class="key">"text"</tspan><tspan class="p">: </tspan><tspan class="s">"lo, "</tspan><tspan class="p">}</tspan></text>
+  </g>
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+3.0s" dur="0.2s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+7.0s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="28" y="208"><tspan class="p">event: </tspan><tspan class="fn">delta</tspan><tspan class="p">   data: {</tspan><tspan class="key">"text"</tspan><tspan class="p">: </tspan><tspan class="s">"world"</tspan><tspan class="p">}</tspan></text>
+  </g>
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+3.8s" dur="0.2s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+7.0s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="28" y="236"><tspan class="p">event: </tspan><tspan class="fn">done</tspan><tspan class="p">    data: [DONE]</tspan></text>
+  </g>
+
+  <!-- ok line -->
+  <g opacity="0">
+    <animate attributeName="opacity" begin="loop.begin+4.7s" dur="0.2s" to="1" fill="freeze"/>
+    <animate attributeName="opacity" begin="loop.begin+7.0s" dur="0.2s" to="0" fill="freeze"/>
+    <text class="t" x="28" y="278"><tspan fill="#27c93f">✓</tspan><tspan class="c"> streamed over fetch · opt-in reconnect · zero-dep</tspan></text>
+  </g>
+
+  <!-- blinking caret -->
+  <rect x="28" y="300" width="9" height="18" fill="#a5d6ff">
+    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.5;1" dur="1s" repeatCount="indefinite"/>
+  </rect>
+  <text class="t c" x="44" y="314">for await (const e of sse(url, opts)) { … }</text>
+</svg>
