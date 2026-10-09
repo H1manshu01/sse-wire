@@ -62,6 +62,11 @@ fetch → SSE (sse-wire) → parse partial JSON (trickle-json) → repair/coerce
 - **[`sse-wire`](https://www.npmjs.com/package/sse-wire)** — POST the request, stream the events. *(this package)*
 - **[`trickle-json`](https://www.npmjs.com/package/trickle-json)** — assemble the streamed token deltas into the best valid partial value available on every chunk, without throwing.
 - **[`coerce-json`](https://www.npmjs.com/package/coerce-json)** — repair and coerce that value to fit your Zod / JSON Schema, logging every fix.
+- **[`trickle-react`](https://www.npmjs.com/package/trickle-react)** — React hooks that render that pipeline field by field.
+- **[`expect-llm`](https://www.npmjs.com/package/expect-llm)** — assert LLM output in Vitest or Jest.
+- **[`retry-wire`](https://www.npmjs.com/package/retry-wire)** — provider-aware retry and throttle for the request that opens the stream.
+- **[`context-budgeter`](https://www.npmjs.com/package/context-budgeter)** — fit a chat history into the model's context window.
+- **[`trickle-structured`](https://www.npmjs.com/package/trickle-structured)** — the **capstone**: one call from `fetch` to a validated object, composing `sse-wire` + `trickle-json` + `coerce-json`.
 
 Each is zero-dependency and useful on its own; together they're a progressive, typed, schema-fitted streaming flow. A [worked composition example](#composing-the-pipeline) is below.
 
